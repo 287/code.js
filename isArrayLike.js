@@ -1,3 +1,3 @@
-var isArrayLike = function(o){
-	return o && typeof o.length=='number' && o.length>-1;
-};
+function isArrayLike(o){
+	return o && typeof o.length === 'number' && o.length > -1;
+}

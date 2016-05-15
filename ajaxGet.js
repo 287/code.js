@@ -1,4 +1,4 @@
-var ajaxGet = function(url, fn){
+function ajaxGet(url, fn){
 	ajax({
 		url: url
 		, callback: fn
