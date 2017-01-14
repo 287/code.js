@@ -2,13 +2,10 @@ function clone(o){
 	return clone(o);
 	
 	function clone(o){
-		var type = Object.prototype.toString.call(o).match(/ ([^\]]+)/)[1].toLowerCase()
-		, rs
-		, l
-		, i
+		var type = Object.prototype.toString.call(o).slice(8, -1).toLowerCase()
+		, rs, l, i
 		;
-
-		if(['number', 'string', 'boolean', 'null', 'undefined', 'regexp'].indexOf(type) > -1){
+		if(['number', 'string', 'boolean', 'null', 'undefined', 'regexp', 'function'].indexOf(type) > -1){
 			rs = o;
 		}else if(type === 'array'){
 			rs = [];

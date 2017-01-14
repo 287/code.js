@@ -8,13 +8,13 @@ function dateFormat(format, date){
 	
 	//* format
 	return format.replace(regx, function(t, k){
-		op[k] = op[k] !== undefined ? op[k] : getDateValue(k, date);
+		op[k] = op[k] !== undefined ? op[k] : getDateValue(date, k);
 		return op[k];
 	});
 	
 	
 	//* get date value method
-	function getDateValue(key, date){
+	function getDateValue(date, key){
 		var kMap = {
 			y: 'FullYear'
 			, m: 'Month'
@@ -42,7 +42,7 @@ function dateFormat(format, date){
 				case 'y':
 					v = v.toString().substr(2);
 				break; case 'W':
-					v = ' 一二三四五六日'.charAt(v);
+					v = '一二三四五六日'.charAt(v - 1);
 				break; default:
 					v = v > 9 ? v : '0' + v;
 			}
