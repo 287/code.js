@@ -1,75 +1,107 @@
-function ajax(o){
-	var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP")
-	, sendData = null
-	, op = {
-		xhr: xhr
-		, url: null
-		, data: null //[get|post|put|delete]
-		, method: null //[origin|json]
-		, dataType: null //[form|json]
-		, contentType: ''
-		, async: true
-		, header: null
-		, callback: null
-		, beforeSend: null
-	}
-	, k
-	;
+/**
+ * @include object2querystring, eachObject, apply
+ * @param {object} op
+ * @param {string} op.url
+ * @param {string} [op.method = 'get'] - [get|post]
+ * @param {string} [op.dataType = 'plain'] - [plain|json] - response data type
+ * @param {object} [op.data] - request data
+ * @param {string} [op.postType = 'text'] - [form|json] - request data type
+ * @param {object} [op.headers]
+ * @param {function} [op.beforeSend]
+ * @param {function} cb
+ * @return {object}
+ */
+function ajax(op, cb){
+	const xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+	op = Object.assign({
+		xhr,
+		method: 'get',
+		dataType: 'plain',
+		postType: 'form',
+		headers: {},
+	}, op);
+	op.method = op.method.toLowerCase();
+	let postData;
 
-	//* parse option
-	for(k in o){
-		op[k] = o[k];
-	}
-	op.method = (op.method || op.type || 'get').toLowerCase();
-	op.header = op.header || {};
-
-	//* parse send data
-	if(op.data && typeof op.data === 'object'){
-		if(op.contentType === 'json'){
-			sendData = JSON.stringify(op.data);
+	// apply data
+	if(op.data){
+		if(op.method === 'get'){
+			op.url += object2querystring(op.data);
 		}else{
-			sendData = [];
-			for(k in op.data){
-				sendData.push(k + '=' + encodeURIComponent(op.data[k]));
+			switch(op.postType){
+				case 'json':
+					postData = JSON.stringify(op.data);
+					op.headers['Content-Type'] = 'application/json';
+				break; case 'form': case null:
+					postData = object2querystring(op.data);
+					op.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 			}
-			sendData = sendData.join('&');
 		}
 	}
-
-	//* parse header
-	if(['post', 'put'].indexOf(op.method) > -1){
-		op.header['Content-Type'] = 'application/' + (op.contentType == 'json' ? 'json' : 'x-www-form-urlencoded');
-	}
-
-	//* bind callback
-	xhr.onreadystatechange = function (){
-		var rs = false;
-		if(typeof op.callback === 'function' && xhr.readyState === 4){
+	
+	xhr.onreadystatechange = function(){
+		var rs = null, err = null;
+		if(xhr.readyState === 4){
 			if(xhr.status === 200){
-				rs = op.result = xhr.responseText;
-				if(op.dataType === 'json'){
+				rs = xhr.responseText;
+			}else{
+				err = 'ajax load error';
+			}
+			if(op.dataType === 'json'){
+				try{
 					rs = JSON.parse(rs);
+				}catch(err){
+					err = err;
 				}
 			}
-			op.callback(rs);
+			apply(cb, [err, rs]);
 		}
 	};
 	
-	//* open before set header
-	xhr.open(op.method.toUpperCase(), op.url, op.async);
+	xhr.open(op.method.toUpperCase(), op.url);
 	
-	//* set header
-	for(k in op.header){
-		xhr.setRequestHeader(k, op.header[k]);
-	}
+	// apply headers
+	eachObject(op.headers, (value, key)=> xhr.setRequestHeader(key, value));
 
-	//* bind beforeSend
-	if(typeof op.beforeSend === 'function'){
-		if(op.beforeSend(op) === false){
-			return false;
-		}
-	}
-
-	//* send
-	xhr.send(sendData);
+	apply(op.beforeSend, [op]);
+	
+	setTimeout(()=> xhr.send(postData));
+	
+	return op;
 }
+
+
+ajax.get = function(url, op, cb){
+	if(isFunction(op)){
+		cb = op;
+		op = null;
+	}
+ 	return ajax(Object.assign({
+		url,
+	}, op), cb);
+};
+
+ajax.getJson = function(url, op, cb){
+	if(isFunction(op)){
+		cb = op;
+		op = null;
+	}
+ 	return ajax(Object.assign({
+		url,
+		dataType: 'json',
+	}, op), cb);
+};
+
+ajax.post = function(url, data, op, cb){
+	if(isFunction(op)){
+		cb = op;
+		op = null;
+	}
+ 	return ajax(Object.assign({
+		method: 'post',
+		dataType: 'json',
+		postType: 'form',
+		url,
+		data,
+	}, op), cb);
+};

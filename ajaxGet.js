@@ -1,23 +1,24 @@
-function ajaxGet(url, fn){
-	var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP")
-	;
-	xhr.onreadystatechange = function (){
-		var rs = false;
-		if(typeof fn === 'function' && xhr.readyState === 4){
-			if(xhr.status === 200){
-				rs = op.result = xhr.responseText;
+/*
+ * @include isFunction
+ */
+function ajaxGet(url, cb){
+	var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+	if(isFunction(cb)){
+		xhr.onreadystatechange = function (){
+			var err = null, rs;
+			if(xhr.readyState === 4){
+				if(xhr.status === 200){
+					rs = xhr.responseText;
+				}else{
+					err = 'ajax get error';
+				}
+				cb(err, rs);
 			}
-			callback(rs);
-		}
-	};
-	xhr.onerror = function(){
-		callback(false);
-	};
-	
-	xhr.open('GET', url, true);
-	xhr.send(sendData);
-	
-	function callback(rs){
-		typeof fn === 'function' && fn.call(xhr, rs);
+		};
 	}
+	xhr.open('GET', url, true);
+	setTimeout(function(){
+		xhr.send();
+	}, 0);
+	return xhr;
 }

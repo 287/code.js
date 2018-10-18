@@ -1,0 +1,3 @@
+function filterNodes(nodes, op){
+	
+}

@@ -15,12 +15,9 @@ function clone(o){
 		}else{
 			rs = {};
 			for(i in o){
-				if(o.hasOwnProperty(i)){
-					rs[i] = clone(o[i]);
-				}
+				if(o.hasOwnProperty(i)) rs[i] = clone(o[i]);
 			}
 		}
-
 		return rs;
 	}
 }

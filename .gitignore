@@ -1,2 +1,4 @@
 *.php
-*__.js
+*.html
+test/
+pack/
