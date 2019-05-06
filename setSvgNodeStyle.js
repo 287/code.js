@@ -1,12 +1,14 @@
 //#!py
 /**
- * @include eachObject isObject setNodeStyleValue renameObjectKeys
+ * @include eachObject setSvgNodeStyleValue
  * @param {object} [op]
  * @param {number} [op.width = '100%']
  * @param {number} [op.height = '100%']
  * @return {element}
  */
 function setSvgNodeStyle(node, op, excludeKeys = [])
+	return eachObject(op, (value, key)=> setSvgNodeStyleValue(node, key, value))
+	
 	const tagName = node.tagName
 	// let styleKeys = [
 		// 'fontFamily',

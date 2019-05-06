@@ -1,3 +1,4 @@
+//#!py
 /**
  * *************************************************
  * @type lineTo
@@ -25,8 +26,18 @@
  * @param {number} i
  * @return {string}
  */
-function getCanvasPointType(p, i = 1){
-	const types = ['moveTo', 'arc', 'lineTo', , 'quadraticCurveTo', 'arcTo', 'bezierCurveTo'];
-	i = i === 0 ? i : p.length !== 6 ? p.length : isBoolean(p[5]) ? 1 : p.length;
-	return types[i];
-}
+function getCanvasPointType(p, i)
+	let type = 'lineTo'
+	
+	select p.length
+		case 2
+			if i === 0
+				type = 'moveTo'
+		case 4
+			type = 'quadraticCurveTo'
+		case 6
+			type = 'bezierCurveTo'
+		case 7
+			type = 'arc'
+			
+	return type

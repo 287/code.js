@@ -4,15 +4,21 @@
  */
 function loadByAjax(url, cb)
 	const xhr = getAjax()
-	xhr.open('GET', url, true)
+	
 	xhr.onreadystatechange = function()
 		if xhr.readyState === 4
-			let err = null, rs
 			if xhr.status === 200
-				rs = xhr.responseText
+				cb(null, xhr.response)
 			else
-				err = 'ajax get error'
+				cb('ajax error')
 			
-			cb(err, rs)
-	setTimeout(()=> xhr.send())
+	xhr.timer = setTimeout(()=> {
+		xhr.open('GET', url, true)
+		xhr.send()
+	})
+	
+	xhr.cancel = ()=> 
+		clearTimeout(xhr.timer)
+		xhr.abort()
+	
 	return xhr

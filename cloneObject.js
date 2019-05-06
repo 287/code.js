@@ -1,6 +1,6 @@
 //#!py
 /**
- * @include isArray isObject eachArray eachObject
+ * @include isArray isPureObject
  * @param {any} o
  * @return {any}
  */
@@ -13,10 +13,12 @@ function cloneObject(o)
 		
 		if isArray(o)
 			rs = []
-			eachArray(o, (value)=> rs.push(clone(value)))
-		else if isObject(o)
+			for o as value, i
+				rs.push(clone(value))
+		else if isPureObject(o)
 			rs = {}
-			eachObject(o, (value, key)=> rs[key] = clone(value))
+			for o as value, key, i
+				rs[key] = clone(value)
 		else
 			rs = o
 		

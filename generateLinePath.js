@@ -4,8 +4,8 @@
  * @include generateStepLinePoints generateArrowPoints eachObjectFilter
  * @param {array<number>} op.startPoint
  * @param {array<number>} op.endPoint
- * @param {number} op.stepMode - 0: 不折线 1: 横一折 2: 纵一折 3: 横二折 4: 纵二折
- * @param {number} op.arrowMode - 0: 不使用箭头 1：结束箭头 2：起始箭头 3：单项双箭头 4：双向双箭头
+ * @param {number} op.stepMode - ["无折线", "横一折", "纵一折", "横二折", "纵二折"]
+ * @param {number} op.arrowMode - ["无箭头", "结束箭头", "起始箭头", "单项双箭头", "双向双箭头"]
  * @param {number|boolean} [op.revise] - 修正的角度 - 如果是true则旋转每个角的度数
  */
 function generateLinePath(startPoint, endPoint, op)

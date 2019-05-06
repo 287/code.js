@@ -28,6 +28,8 @@ function eachNodeChilds(node, task, childNodesKey)
 			return rs
 		else if rs !== -1
 			let childs = node[childNodesKey]
+			if !isArray(childs)
+				childs = Array.from(childs)
 			if childs && childs.length > 0
 				eachArray(childs, (childNode, i)=> {
 					return eachChild(childNode, {

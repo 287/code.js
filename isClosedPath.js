@@ -1,3 +1,3 @@
-function isClosedPath(path){
-	return path.length > 1 && path[0][0] === path[path.length - 1][0] && path[0][1] === path[path.length - 1][1];
-}
+//#!py
+function isClosedPath(path)
+	return path.length > 1 && path[0].every((v, i)=> path[path.length - 1][i] === v)

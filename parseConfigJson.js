@@ -10,13 +10,10 @@ function parseConfigJson(str)
 		return null
 	
 	// 剔除单行注释
-	str = str.replace(/(^|\n)\s*(\/\/|#).*(\n|$)/g, '')
-	
-	// 替换换行符
-	str = str.replace(/\r?\n/g, '\f')
+	str = str.replace(/(^|\n)\s*(\/\/|#).*(?=\n|$)/g, '')
 	
 	// 剔除多行注释
-	str = str.replace(/\/\*.*?\*\//g, '')
+	str = str.replace(/\/\*[^]*?\*\//g, '')
 	
 	// 提取字符串
 	let marks
@@ -37,9 +34,12 @@ function parseConfigJson(str)
 	// object key 添加 '"'
 	str = str.replace(/(\{|,)([a-z0-9_\-\.]+)(:)/ig, '$1"$2"$3')
 	
+	// 小数没有前导0 添加 '0'
+	str = str.replace(/(:\s*-?)(\.\d+)/ig, '$10$2')
+	
 	// 还原字符串
 	str = str.replace(/<-(\d+)->/g, (t, m)=> marks[m].replace(/\f/g, '\\n'))
-		
+	
 	let data = JSON.parse(str)
 		
 	return data

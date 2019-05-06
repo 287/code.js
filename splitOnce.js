@@ -3,11 +3,11 @@
  * @param {string} str - string
  * @param {string} sep - separator
  * @param {number} [index = undefined]
- * @param {string} [direction = lr] - lr:from left to right, rl:from right to left
+ * @param {boolean} [reverse = false] - lr:from left to right, rl:from right to left
  * @return {array<string>} list splited
  */
-function splitOnce(str, sep, index, direction){
-	var i = str[direction !== 'rl' ? 'indexOf' : 'lastIndexOf'](sep, index);
+function splitOnce(str, sep, index, reverse){
+	var i = str[reverse ? 'lastIndexOf' : 'indexOf'](sep, index);
 	var list = [str];
 	if(i > -1){
 		list[1] = str.slice(i + sep.length);

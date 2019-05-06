@@ -1,11 +1,15 @@
+//#!py
 /**
- * @param {array<array>} arr - like [['key', 'value'], ['key', 'value']]
+ * @param {array<array|string>} arr - like [[key, value]] or keys
+ * @param {array} [values]
  * @return {object}
  */
-function array2object(arr){
-	let rs = {};
-	arr.forEach(([key, value])=>{
-		rs[key] = value;
-	});
-	return rs;
-}
+function array2object(arr, values)
+	const obj = {}
+	
+	if values
+		arr.forEach((key, i)=> obj[key] = values[i])
+	else
+		arr.forEach(([key, value])=> obj[key] = value)
+	
+	return obj

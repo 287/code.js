@@ -40,5 +40,3 @@ function copyDirAsync(dir, dest, cb)
 		30,
 		(err)=> cb(err)
 	)
-	
-copyDirAsync('d:/server', 'd:/server2', console.log)

@@ -8,4 +8,5 @@ function loadImage(src, cb)
 	const img = new Image
 	img.src = src
 	img.onload = ()=> cb(null, img)
-	img.onerror = (e)=> cb(e)
+	img.onerror = cb
+	return img

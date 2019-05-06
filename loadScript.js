@@ -1,15 +1,15 @@
+//#!py
 /**
+ * @include createSrcNode removeNode
  * @param {string} src
  * @param {function} cb
  * @return {<element>}
  */
-function loadScript(src, cb){
-	var node = document.createElement('script');
-	node.src = src;
-	node.onload = function(e){
-		cb && cb(null, this);
-	};
-	node.onerror = cb;
-	(document.head || document.body).appendChild(node);
-	return node;
-}
+function loadScript(src, cb)
+	const node = createSrcNode('script', src, (err)=> {
+		removeNode(node)
+		cb && cb(err)
+	})
+	document.head.appendChild(node)
+	
+	return node

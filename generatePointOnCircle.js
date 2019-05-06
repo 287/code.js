@@ -3,15 +3,17 @@
  * @include generateRotateMatrix transformPointByMatrix
  * @param {number} r
  * @param {number} angle
- * @param {array<number>} [origin]
+ * @param {number} [x]
+ * @param {number} [y]
  * @return {array<number>}
  */
-function generatePointOnCircle(r, angle, origin)
+function generatePointOnCircle(r, angle, x = 0, y = 0)
 	let p = [r, 0]
 	if angle !== 0
 		const matrix = generateRotateMatrix(angle)
 		p = transformPointByMatrix(p, matrix)
-	if origin
-		origin.forEach((v, i)=> p[i] += v)
+		
+	p[0] += x
+	p[1] += y
 		
 	return p

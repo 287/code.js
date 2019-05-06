@@ -13,6 +13,7 @@ function createMysqlConnection(op)
 		password: '',
 		database: '',
 	}, op)
+	
 	renameObjectKeys(op, {
 		name: 'database',
 		db: 'database',

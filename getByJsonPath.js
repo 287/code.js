@@ -1,20 +1,14 @@
 //#!py
-/**
- * @include isObject eachArray
- */
-function getByJsonPath(o, key, sep = '.')
-	let rs
-	key = key + ''
-	
-	if isObject(o)
-		rs = o
-		eachArray((key + '').split(sep), (key)=>{
-			if key === ''
-				return 
+function getByJsonPath(obj, key, sep = '.')
+	let rs = obj
+	if key !== ''
+		const keys = key.split(sep)
+		
+		keys.some((key)=> {
 			if rs == null
-				return false
-			
+				return true
+				
 			rs = rs[key]
 		})
-	
+		
 	return rs

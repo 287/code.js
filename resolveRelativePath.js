@@ -1,11 +1,14 @@
 //#!py
 /**
- * @include splitPath
+ * @include isAbsolutePath splitPath
  * @param {string} path - relative path
  * @param {string} cwd - current dir
  * @return {string}
  */
 function resolveRelativePath(path, cwd)
+	if isAbsolutePath(path)
+		return path
+		
 	let dirs = splitPath(cwd, 1)
 	let paths = splitPath(path)
 	let offset = 0
@@ -25,7 +28,6 @@ function resolveRelativePath(path, cwd)
 		return path
 	}).filter(path=> path !== null)
 	
-	if path[0] !== '/'
-		paths = dirs.slice(0, offset === 0 ? undefined : offset).concat(paths)
+	paths = dirs.slice(0, offset === 0 ? undefined : offset).concat(paths)
 		
 	return paths.join('')

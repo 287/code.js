@@ -1,16 +1,19 @@
+//#!py
 /**
- * @param {object} o - target object
+ * @param {any} obj - module object
  * @param {string} [name = o.name] - module name
- * @return {object}
+ * @return {any}
  */
-function exportModule(o, name){
-	name = name || o.name;
-	if(typeof define === 'function' && define.amd){
-		define(name, [], o);
-	}else if(typeof module === 'object' && module.exports){
-		module.exports = o;
-	}else if(typeof window === 'object' && Object.prototype.toString.call(window) === '[object Window]'){
-		window[name] = o;
-	}
-	return o;
-}
+function exportModule(obj, name)
+	name = name || obj.name
+	
+	if typeof define === 'function' && define.amd
+		define([], obj)
+		
+	else if typeof module === 'object' && module.exports
+		module.exports = obj
+		
+	else if typeof window === 'object'
+		window[name] = obj
+		
+	return obj

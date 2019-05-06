@@ -1,0 +1,23 @@
+/**
+ * *************************************************
+ * @type moveTo
+ * @input-params [x, y]
+ * @input-length 2
+ *
+ * @type lineTo
+ * @input-params [x, y]
+ * @input-length 2
+ *
+ * @type arc
+ * @input-params [x, y, originX, originY, r, startAngle, endAngle]
+ * @input-length 7
+ *
+ * @type quadraticCurveTo
+ * @input-params [x, y, controlPointX, controlPointY]
+ * @input-length 4
+ *
+ * @type bezierCurveTo
+ * @input-params [x, y, controlPointOneX, controlPointOneY, controlPointTwoX, controlPointTwoY]
+ * @input-length 6
+ * *************************************************
+ */

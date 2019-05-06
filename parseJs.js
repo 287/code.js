@@ -24,11 +24,11 @@ function parseJs(content, toPyStyle)
 	function createMultilineKey()
 		return `<~${multilineIndex++}~>`
 	
-	// 替换多行字符串
-	content = content.replace(/`[^]*?`/g, (mark)=> multilines.push(mark) && createMultilineKey())
-	
 	// 替换多行注释
 	content = content.replace(/\/\*[^]*?\*\//g, (mark)=> multilines.push(mark) && createMultilineKey())
+	
+	// 替换多行字符串
+	content = content.replace(/`[^]*?`/g, (mark)=> multilines.push(mark) && createMultilineKey())
 	
 	let blocks = {}
 	let lastBlockIndex = 0
@@ -87,15 +87,19 @@ function parseJs(content, toPyStyle)
 					else if isStringStartsWith(code, staticMark)
 						code = code.slice(staticMark.length)
 						
+						const equalSignIndex = code.indexOf('=')
+						const parenthesesIndex = code.indexOf('(')
+						
 						// class 的静态属性声明
-						if code.includes('=')
+						if equalSignIndex > -1 && (parenthesesIndex > -1 ? parenthesesIndex > equalSignIndex : true)
 							code = `${className}.${code}`
 						// class 的静态方法
-						else if code.includes('(')
+						else if parenthesesIndex > -1
 							let index = code.indexOf('(')
 							let name = code.slice(0, index)
 							code = code.slice(index)
 							code = `${className}.${name} = function ${code}`
+							node.wrap = true
 						// class 的静态属性引用
 						else
 							code = `${className}.${code} = ${code}`
@@ -155,9 +159,14 @@ function parseJs(content, toPyStyle)
 			cmd = node.cmdAlias = cmdAlias[cmd]
 			
 		if !wrap && !cmd && code !== ''
+				
 			// 补齐 ;
-			if !['}'].includes(code) && !isStringWiths(code, [','], [';', '.', ',', '(', '{', '['])
-				marks[1] += ';'
+			if !['}'].includes(code) && !isStringWiths(code, [','], [';', ':', '.', ',', '(', '{', '['])
+				// 补齐 ,
+				if isOrderParamByParentCode(conf.parent.code) && !isStringWiths(code, [], [',', ';']) && !isStringEndsWiths(marks[1], [',', ';']) && !node.childs.length
+					marks[1] += ','
+				else
+					marks[1] += ';'
 				
 				/*!
 					obj
@@ -233,6 +242,9 @@ function parseJs(content, toPyStyle)
 				if node.wrap
 					// 补齐 }
 					endsStr = '}'
+					
+					if isOrderParamByParentCode(conf.parent.code)
+						endsStr += ','
 				
 				// let nextSibling = conf.getNextSibling()
 				// if nextSibling && nextSibling.code === '}'
@@ -248,6 +260,10 @@ function parseJs(content, toPyStyle)
 	content = content.replace(/\}[\s]+(else|else if|catch|finally) /g, (t, cmd)=> `} ${cmd} `)
 	
 	// 还原多行字符串
+	for multilines as str i
+		// while /<~(\d+)~>/.test(str)
+		multilines[i] = str.replace(/<~(\d+)~>/g, (t, index)=> multilines[index])
+	// console.log(multilines)
 	content = content.replace(/<~(\d+)~>/g, (t, index)=> multilines[index])
 	
 	return content
@@ -258,7 +274,7 @@ function parseJs(content, toPyStyle)
 		let content = node.content
 		let {wrap, marks = ['', '']} = node 
 
-		let [cmd, code] = matchCommand(content)
+		let [cmd, code] = matchCommand(content, node)
 		
 		if wrapCmds.includes(cmd)
 			wrap = true
@@ -290,7 +306,7 @@ function parseJs(content, toPyStyle)
 		})
 		
 	// 拆分 cmd 和 code
-	function matchCommand(content)
+	function matchCommand(content, node)
 		let code = content
 		
 		if isStringWith(code, '}', '{')
@@ -313,6 +329,13 @@ function parseJs(content, toPyStyle)
 				code = ''
 		
 		if cmd
+			if cmd === 'for'
+				if code.includes(' as ') || ![';', ' in ', ' of '].some(key=> code.includes(key))
+					/**
+					 * @include parseForAsStatement
+					 */
+					code = parseForAsStatement(code.replace(/\n\t+/g, ' '), true, node.tabs)
+				
 			if code.slice(-1) === '{'
 				code = trim(code.slice(0, -1))
 				
@@ -342,3 +365,11 @@ function parseJs(content, toPyStyle)
 		node.parent = pNode
 			
 		childs.splice(index + 1, 0, node)
+		
+	function isOrderParamByParentCode(code)
+		if isStringEndsWiths(code, ['(', '=', '['])
+			return true
+		else if code.endsWith('{')
+			const tmpCode = trim(code.slice(0, -1))
+			if tmpCode !== '' && !isStringEndsWiths(tmpCode, [')', '>'])
+				return true

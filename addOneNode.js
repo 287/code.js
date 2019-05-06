@@ -1,5 +1,5 @@
 /**
- * @include setStyle
+ * @include setNodeStyle
  * @param {object} style
  * @param {element} [style.parent = document.body]
  * @param {object} [style.attrs = {}]
@@ -30,6 +30,6 @@ function addOneNode(style){
 	if(style.y){
 		style.top = style.y - style.height / 2;
 	}
-	setStyle(node, style);
+	setNodeStyle(node, style);
 	document.body.append(node);
 }

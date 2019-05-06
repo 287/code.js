@@ -10,6 +10,6 @@ function eachToGet(each, o, cb)
 	each(o, (value, key)=> {
 		rs = cb(value, key, o)
 		if rs !== undefined
-			return false
+			return true
 	})
 	return rs

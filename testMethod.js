@@ -23,25 +23,34 @@ function testMethod(testParams, testMethod, op){
 		verbose: false,
 	}, op);
 	
-	testParams.forEach((testParam, i)=>{
+	testParams.forEach((testParam, i)=> {
+		let [name, params, expect, parseReceive] = testParam
 		let receive, rs;
 		let time = Date.now();
-		receive = testMethod(...testParam[1]);
-		if(isFunction(testParam[2])){
-			testParam[2] = testParam[2](...testParam[1]);
+		
+		receive = testMethod(...params);
+		
+		if(isFunction(expect)){
+			expect = expect(...params);
 		}
-		if(isFunction(testParam[3])){
-			receive = testParam[3](receive);
+		if(isFunction(parseReceive)){
+			receive = parseReceive(receive);
+		}
+		if(isFunction(op.parseExpect)){
+			expect = op.parseExpect(expect);
+		}
+		if(isFunction(op.parseReceive)){
+			receive = op.parseReceive(receive);
 		}
 		time = Date.now() - time;
 		timeCount += time;
 		rs = {
 			// index: i + 1,
-			test: testParam[0],
-			params: testParam[1],
-			expect: testParam[2],
+			test: name,
+			params: params,
+			expect: expect,
 			receive: receive,
-			is: isEqual(receive, testParam[2]),
+			is: isEqual(receive, expect),
 			duration: time,
 			mark: '',
 		};

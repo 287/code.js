@@ -2,7 +2,6 @@
 /**
  * @desc 把小数转换成百分比 即 以 % 结尾的字符串
  */
-function toPercentCase(value)
+function toPercentCase(value, fixedLength = 2)
 	value *= 100
-	value += '%'
-	return value
+	return value.toFixed(fixedLength) * 1 + '%'

@@ -1,6 +1,6 @@
 //#!py
 /**
- * @include isObject isFunction object2querystring getByAjax
+ * @include isObject isFunction isPureObject object2querystring getByAjax
  * @param {object} op
  * @param {string} op.url
  * @param {string} [op.method = 'post'] - [post|put]
@@ -31,18 +31,15 @@ function postByAjax(url, data, op, cb)
 		headers: {},
 	}, op)
 	
-	if op.data != null
-		switch op.dataType
+	if isPureObject(op.data)
+		select op.dataType
 			case 'json'
 				op.headers['Content-Type'] = 'application/json'
-				if isObject(op.data)
-					op.data = JSON.stringify(op.data)
-				break
+				op.data = JSON.stringify(op.data)
 				
 			case 'form'
 			default
 				op.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-				if isObject(op.data)
-					op.data = object2querystring(op.data)
+				op.data = object2querystring(op.data)
 				
 	return getByAjax(op, cb)

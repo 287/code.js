@@ -4,13 +4,13 @@
  * @param {string} path
  * @return {object}
  */
-function splitUrl(url){
+function splitUrl(url, simpleMode){
 	var rs = {};
 	var tmp;
 	
-	tmp = splitOnce(url, '//');
+	tmp = splitOnce(url, '://');
 	if(tmp.length > 1){
-		rs.protocol = tmp[0];
+		rs.protocol = tmp[0] + ':';
 		url = tmp[1];
 	
 		tmp = splitOnce(url, '/');
@@ -34,7 +34,7 @@ function splitUrl(url){
 	
 	rs.path = url;
 	
-	if(!isEmpty(rs.path)){
+	if(!isEmpty(rs.path) && !simpleMode){
 		tmp = splitUrlPath(rs.path);
 		Object.assign(rs, tmp);
 	}

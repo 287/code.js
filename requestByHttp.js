@@ -10,14 +10,13 @@
  * @return {ClientRequest} req
  */
 function requestByHttp(op, cb)
-	op = Object.assign(splitUrl(op.url), op)
-	
+	op = Object.assign(splitUrl(op.url, true), op)
 	const httpObject = op.protocol === 'https:' ? https : http;
 	
 	const req = httpObject.request(op, (res)=> {
 		const bufs = []
 		res.on('data', (buf)=> bufs.push(buf))
-		res.on('end', ()=> cb(null, Buffer.concat(bufs)))
+		res.on('end', ()=> cb(null, Buffer.concat(bufs), res))
 		res.on('error', cb)
 	})
 	

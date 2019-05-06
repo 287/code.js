@@ -1,6 +1,6 @@
 //#!py
 /**
- * @include isArray generatePointOnCircle isNumber
+ * @include isArray generatePointOnCircle isNumber generateArcPoint
  * @param {string} type
  * @param {object} op
  * @return {array<array<number>>}
@@ -11,8 +11,6 @@ function generateShapePath(type, op, resetOrigin)
 	
 	if resetOrigin
 		x = y = 0
-		
-	const origin = [x, y]
 		
 	
 	select type
@@ -78,6 +76,42 @@ function generateShapePath(type, op, resetOrigin)
 					[x - r[0], y + r[1] - corner],
 				],
 			);
+	
+		/**
+		 * @desc 绘制圆形
+		 * @param {number} op.x
+		 * @param {number} op.y
+		 * @param {number} op.r
+		 */
+		case 'circle'
+			const {r} = op
+			path.push([
+				generatePointOnCircle(r, 0, x, y),
+				// generateArcPoint(x, y, r, 0, 180),
+				generateArcPoint(x, y, r, 0, 360),
+			])
+		
+		/**
+		 * @desc 绘制圆形的一部分扇形
+		 * @param {number} op.x
+		 * @param {number} op.y
+		 * @param {number} op.r
+		 * @param {number} op.startsAngle
+		 * @param {number} op.endsAngle
+		 */
+		case 'sector'
+			const {r, startsAngle, endsAngle} = op
+			if startsAngle !== endsAngle
+				if (startsAngle - endsAngle) % 360 === 0
+					return generateShapePath('circle', op, resetOrigin)
+					
+				path.push(
+					[x, y],
+					generatePointOnCircle(r, startsAngle, x, y),
+					generateArcPoint(x, y, r, startsAngle, endsAngle),
+					[x, y],
+				);
+	
 		
 		/**
 		 * @desc 绘制圆环或圆环的一部分
@@ -90,62 +124,27 @@ function generateShapePath(type, op, resetOrigin)
 		 */
 		case 'ring'
 			const {innerRadius, outerRadius, startsAngle, endsAngle} = op
-			
-			if (startsAngle - endsAngle) % 360 === 0
-				for let i = 0; i < 2; i++
-					let r = i === 0 ? innerRadius : outerRadius
-					path.push(
-						generateShapePath('circle', {
-							x,
-							y,
-							r,
-						}, resetOrigin),
-					)
-				return path
-			
-			path.push(
-				generatePointOnCircle(innerRadius, startsAngle, origin),
-				generatePointOnCircle(outerRadius, startsAngle, origin),
-				generatePointOnCircle(outerRadius, endsAngle, origin).concat([startsAngle, endsAngle, outerRadius]),
-				generatePointOnCircle(innerRadius, endsAngle, origin),
-			)
-			path.push(path[0].concat([endsAngle, startsAngle, innerRadius]))
-	
-		/**
-		 * @desc 绘制圆形
-		 * @param {number} op.x
-		 * @param {number} op.y
-		 * @param {number} op.r
-		 */
-		case 'circle'
-			const {r} = op
-			for let i = 0; i < 2; i++
-				let startsAngle = 180 * i
-				path.push([
-					generatePointOnCircle(r, startsAngle, origin),
-					generatePointOnCircle(r, startsAngle + 180, origin).concat([startsAngle, startsAngle + 180, r]),
-				])
-		
-		/**
-		 * @desc 绘制圆形的一部分扇形
-		 * @param {number} op.x
-		 * @param {number} op.y
-		 * @param {number} op.r
-		 * @param {number} op.startsAngle
-		 * @param {number} op.endsAngle
-		 */
-		case 'sector'
-			const {r, startsAngle, endsAngle} = op
-			if (startsAngle - endsAngle) % 360 === 0
-				return generateShapePath('circle', op, resetOrigin)
+			if startsAngle !== endsAngle
+				if (startsAngle - endsAngle) % 360 === 0
+					for let i = 0; i < 2; i++
+						let r = i === 0 ? innerRadius : outerRadius
+						path.push(
+							generateShapePath('circle', {
+								x,
+								y,
+								r,
+							}, resetOrigin),
+						)
+					return path
 				
-			path.push(
-				[x, y],
-				generatePointOnCircle(r, startsAngle, origin),
-				generatePointOnCircle(r, endsAngle, origin).concat([startsAngle, endsAngle, r]),
-				[x, y],
-			);
-	
+				path.push(
+					generatePointOnCircle(innerRadius, startsAngle, x, y),
+					generatePointOnCircle(outerRadius, startsAngle, x, y),
+					generateArcPoint(x, y, outerRadius, startsAngle, endsAngle),
+					generatePointOnCircle(innerRadius, endsAngle, x, y),
+					generateArcPoint(x, y, innerRadius, endsAngle, startsAngle),
+				)
+			// path.push(path[0].concat(x, y, [innerRadius, endsAngle, startsAngle]))
 	
 		/**
 		 * 绘制圆上的一段弧线
@@ -156,8 +155,8 @@ function generateShapePath(type, op, resetOrigin)
 		 */
 		case 'arc':
 			path.push(
-				generatePointOnCircle(r, angle[0], origin),
-				generatePointOnCircle(r, angle[1], origin),
+				generatePointOnCircle(r, angle[0], x, y),
+				generatePointOnCircle(r, angle[1], x, y),
 			);
 		
 		/**
@@ -168,8 +167,8 @@ function generateShapePath(type, op, resetOrigin)
 		 */
 		case 'radius':
 			path.push(
-				generatePointOnCircle(r[0], angle, origin),
-				generatePointOnCircle(r[1], angle, origin),
+				generatePointOnCircle(r[0], angle, x, y),
+				generatePointOnCircle(r[1], angle, x, y),
 			);
 	
 		/**
@@ -192,7 +191,7 @@ function generateShapePath(type, op, resetOrigin)
 					rotate = perAngleDeg / 2
 				
 			for let i = 0; i < sides; i++
-				const p = generatePointOnCircle(r, perAngleDeg * i - 90 + rotate, origin)
+				const p = generatePointOnCircle(r, perAngleDeg * i - 90 + rotate, x, y)
 				path.push(p)
 		
 			if path.length > 0
@@ -220,7 +219,7 @@ function generateShapePath(type, op, resetOrigin)
 					rotate = perAngleDeg
 				
 			for let i = 0; i < angles * 2; i++
-				const p = generatePointOnCircle(r[i % 2], perAngleDeg * i - 90 + rotate, origin)
+				const p = generatePointOnCircle(r[i % 2], perAngleDeg * i - 90 + rotate, x, y)
 				path.push(p)
 			
 			if path.length > 0

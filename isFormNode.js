@@ -1,3 +1,6 @@
 //#!py
+/**
+ * @include isInputNode
+ */
 function isFormNode(node)
-	return ['input', 'textarea', 'select', 'button'].includes(node.tagName.toLowerCase())
+	return isInputNode(node) || ['select', 'button'].includes(node.tagName.toLowerCase())

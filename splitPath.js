@@ -3,6 +3,9 @@
  * @alias 
  */
 function splitPath(path, isDir)
+	if path === ''
+		return ['']
+		
 	let lastChr = isDir ? '/' : ''
 	if path.slice(-1) === '/'
 		lastChr = '/'

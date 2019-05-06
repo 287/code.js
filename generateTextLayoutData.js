@@ -1,6 +1,6 @@
 //#!py
 /**
- * @include 
+ * @include parsePaddingValue
  * @param {object} method
  * @param {function} method.getTextWidth
  * @param {function} method.splitTextByWidth
@@ -17,11 +17,13 @@ function generateTextLayoutData(text, op, method)
 	let offsetTop = 0
 
 	if padding
-		width -= padding * 2
-		offsetLeft += padding
+		padding = parsePaddingValue(padding)
 		
-		height -= padding * 2
-		offsetTop += padding
+		width -= padding[1] + padding[3]
+		offsetLeft += padding[1]
+		
+		height -= padding[0] + padding[2]
+		offsetTop += padding[0]
 		
 	lineHeight = lineHeight || fontSize
 		

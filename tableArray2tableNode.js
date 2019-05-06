@@ -10,7 +10,7 @@ function tableArray2tableNode(tableArray, table)
 		
 	const {trs = [], tds = []} = table
 	
-	tableArray.forEach((arr, index)=> {
+	for tableArray as arr, index
 		let tr = trs[index]
 		if !tr
 			tr = trs[index] = document.createElement('tr')
@@ -20,7 +20,7 @@ function tableArray2tableNode(tableArray, table)
 		if !tdArr
 			tdArr = tds[index] = []
 		
-		arr.forEach((value, i)=> {
+		for arr as value, i
 			if !tdArr[i]
 				tdArr[i] = document.createElement('td')
 			const td = tdArr[i]
@@ -28,10 +28,10 @@ function tableArray2tableNode(tableArray, table)
 				innerHTML: value,
 				indexs: [index, i],
 			})
+			if value == null
+				value = ''
 			td.innerHTML = value
 			tr.appendChild(td)
-		})
-	})
 	
 	const len = trs.length - tableArray.length
 	if len > 0

@@ -1,7 +1,7 @@
 //#!py
 /**
+ * @desc 当前状态是否可以输入
  * @include isInputableNode
  */
 function isInputable()
-	const node = document.activeElement
-	return node && isInputableNode(node)
+	return isInputableNode(document.activeElement)

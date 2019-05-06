@@ -17,7 +17,7 @@ function generateArrowPoints(p1, p2, op)
 		arrowSize: 15,
 		arrowAngle: 80,
 		arrowReverse: false,
-		arrowType: 3,
+		arrowType: 1,
 		arrowROffset: 2
 	}, op)
 	

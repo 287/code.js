@@ -1,7 +1,12 @@
-function getObjectByKeys(o, keys, target){
-	var rs = target || {};
-	keys.forEach(function(key){
-		rs[key] = o[key];
-	});
-	return rs;
-}
+//#!py
+function getObjectByKeys(o, keys, target, nonUndefined)
+	const rs = target || {}
+	
+	keys.forEach(key=> {
+		if o[key] === undefined && nonUndefined
+			return
+			
+		rs[key] = o[key]
+	})
+		
+	return rs

@@ -8,8 +8,10 @@ function isPortInUse(port, cb)
 		cb(null, true)
 	});
 	socket.on('error', (err)=>{
-		if err.code === 'ECONNREFUSED'
-			cb(null, false)
-		else
-			cb(err, true)
+		select err.code
+			case 'ENOENT'
+			case 'ECONNREFUSED'
+				err = null
+			
+		cb(err, !err ? false : true)
 	})

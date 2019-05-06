@@ -16,7 +16,7 @@ function addBeelineNode(p1, p2, style){
 	}
 	var angle = getAngleOfPoint(p1, p2);
 	angle -= 90;
-	style.x = p1[0];
+	style.left = p1[0];
 	style.top = p1[1];
 	style.height = getLengthOfTwoPoint(p1, p2);
 	style.transform = `rotate(${angle}deg)`;

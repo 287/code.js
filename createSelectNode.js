@@ -1,18 +1,22 @@
+//#!py
 /**
- * @param {array<object>} list - like [{title: 'item-1', value: '1'}]
- * @param {*} [defaultValue]
+ * @include toOptionNodesData createOptionNodes setNodeChild
+ * @param {array<object|array|any>|object} options
  * @param {object} [op]
- * @param {string} [op.text = 'title']
- * @param {string} [op.value = 'value']
+ * @param {element} [op.node]
+ * @param {string} [op.textKey]
+ * @param {any} [op.valueKey]
+ * @param {any} [op.value]
  * @return {<element>}
  */
-function createSelectNode(list, defaultValue, op){
-	op = Object.assign({text: 'title', value: 'value'}, op);
-	var item = document.createElement('div');
-	var html = '';
-	list.forEach(function(item){
-		html += '<option value="'+ item[op.value] +'"'+ (defaultValue == item[op.value] ? ' selected' : '') +'>'+ item[op.text] +'</option>'
-	});
-	item.innerHTML = '<select>'+ html +'</select>';
-	return item.childNodes[0];
-}
+function createSelectNode(options, op = {})
+	const selectNode = op.node || document.createElement('select')
+	
+	let [values, texts] = toOptionNodesData(options, op)
+	
+	setNodeChild(selectNode, ...createOptionNodes(values, texts))
+	
+	if op.value != null
+		selectNode.value = op.value
+
+	return selectNode

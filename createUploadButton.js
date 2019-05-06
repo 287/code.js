@@ -21,6 +21,9 @@ function createUploadButton(op, cb)
 	const input = createNode(`<input type="file" name="file" id="${buttonId}" accept="${accept}" ${multiple ? 'multiple': ''}>`)
 	const button = createNode(`<label upload-button for="${buttonId}">upload</label>`)
 	
+	button.form = form
+	button.input = input
+	
 	form.append(input)
 	input.onchange = ()=>
 		if button.hasAttribute('disabled')

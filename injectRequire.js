@@ -19,6 +19,24 @@ function injectRequire()
 	const parsers = Module._parsers = {}
 	const baks = Module._extensions_bak = {}
 	
+	addParser('log', ['.js', '.jsx'], (content, filename, module)=> {
+		console.log('injectRequire.log', filename, ':', content)
+		return content
+	})
+	
+	addParser('cache', ['.js', '.jsx'], (content, filename, module)=> {
+		/**
+		 * @require os
+		 * @include getBasename toUnixPath
+		 * @return {undefined}
+		 */
+		const extname = getExtname(filename)
+		const path = toUnixPath(os.tmpdir(), 1) + getBasename(filename, extname) + '_' + Date.now() + extname
+		fs.writeFileSync(path, content)
+		console.log('injectRequire.cache', filename, ' to ', path)
+		return content
+	})
+	
 	// 运行parser
 	function runParse(name, content, filename, module)
 		const item = parsers[name]
@@ -29,7 +47,7 @@ function injectRequire()
 	// 初始化 parser 至 extensions
 	function initParser(module, filename)
 		// const fs = require('fs')
-		let content = fs.readFileSync(filename, 'utf8')
+		let content = fs.readFileSync(filename, 'utf8') + ''
 		content = stripBOM(content)
 		
 		const parserNames = getParsers(content)
@@ -38,8 +56,11 @@ function injectRequire()
 		content = runParse('*', content, filename, module)
 		
 		if parserNames.length > 0
-			parserNames.forEach((name)=>{
-				content = runParse(name, content, filename, module)
+			parserNames.forEach((name)=> {
+				try
+					content = runParse(name, content, filename, module)
+				catch err
+					console.log(`injectRequire.${name} error at ${filename}`, err.message)
 			})
 			
 		module._compile(content, filename)

@@ -7,6 +7,19 @@
  * @return {boolean}
  */
 function getTreeFromStringByTab(string, op)
+	if string.childs
+		return string
+		
+	op = Object.assign({
+		isSkip: null,
+		removeBlankLine: true,
+		removeSingleLineComment: true,
+		removeMultiLineComment: true,
+	}, op)
+	
+	if op.removeMultiLineComment
+		string = string.replace(/\/\*[^]*\*\//g, '')
+	
 	let tree = {
 		content: '',
 		childs: [],
@@ -16,6 +29,7 @@ function getTreeFromStringByTab(string, op)
 	}
 	
 	let isSkip = op && op.isSkip
+	let skipByDoubleSlash = op && op.isSkip
 	
 	let lastTabs
 	let lastNode
@@ -25,19 +39,19 @@ function getTreeFromStringByTab(string, op)
 		
 		line = trim(line)
 		
-		if isSkip
+		if op.removeBlankLine && line === ''
+			return
+		
+		if op.removeSingleLineComment && line.startsWith('//')
+			return
+			
+		if op.isSkip
 			let conf = {
 				parent: lastNode,
 				lineIndex,
 			}
-			if isSkip(line, conf)
+			if op.isSkip(line, conf)
 				return
-		else if line === ''	
-			return
-		
-		
-			// if lastNode
-				// lastNode.placeholder++
 			
 		if baseTabs == null
 			baseTabs = tabs

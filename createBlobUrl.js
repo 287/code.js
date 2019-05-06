@@ -1,8 +1,6 @@
-function createBlobUrl(data, type){
-	switch(typeof data){
-		case 'string':
-			data = data.split('');
-	}
-	var blob = new Blob(data, type);
-	return URL.createObjectURL(blob);
-}
+//#!py
+/**
+ * @include object2blob
+ */
+function createBlobUrl(data, type)
+	return URL.createObjectURL(object2blob(data, type))

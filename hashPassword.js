@@ -1,12 +1,9 @@
+//#!py
 /**
- * @include md5
+ * @desc 将密码转换为散列值
+ * @param {function} crypto
+ * @param {string} passwd
+ * @return {string}
  */
-function hashPassword(pass){
-	pass = md5(pass);
-	let list = [pass];
-	for(let i = 1, l = pass.length; i < l; i++){
-		list.push(pass.slice(i) + pass.slice(0, i));
-	}
-	pass = list.join('');
-	return md5(pass);
-}
+function hashPassword(crypto, passwd, solt = '')
+	return crypto(passwd + solt)

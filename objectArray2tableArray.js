@@ -7,9 +7,13 @@
 function objectArray2tableArray(data)
 	const keys = []
 	
-	data.forEach((item)=> Object.keys(item).forEach(key => keys.includes(key) || keys.push(key)))
+	for data as item -
+		Object.keys(item).forEach(key => keys.includes(key) || keys.push(key))
 	
-	const rs = data.map((item)=> keys.map(key => item[key]))
+	const rs = []
+	
+	for data as item -
+		rs.push(keys.map(key => item[key]))
 	
 	if rs.length > 0
 		rs.unshift(keys)

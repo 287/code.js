@@ -1,10 +1,19 @@
+//#!py
 /**
- * @include isArray, loadScript, promisify
+ * @include isArray loadScript
  * @param {array<string>|string} srcs
- * @return {promise}
+ * @return {undefined}
  */
-function loadScripts(srcs, op){
-	srcs = isArray(srcs) ? srcs : [srcs];
-	let loadScriptAsync = promisify(loadScript);
-	return Promise.all(srcs.map(src => loadScriptAsync(src)));
-}
+function loadScripts(srcs, cb){
+	srcs = isArray(srcs) ? srcs : [srcs]
+	const nodes = srcs.map((src, i)=> {
+		return loadScript(src, (err)=> {
+			if err
+				cb(err)
+			else
+				nodes[i].loaded = true
+				if nodes.every(node=> node.loaded)
+					cb()
+		})
+	})
+	return nodes

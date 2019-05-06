@@ -6,6 +6,7 @@
 function matchAll(string, regx){
 	var list = [];
 	var match;
+	regx.lastIndex = 0;
 	while(match = regx.exec(string)){
 		delete match.input;
 		list.push(match);

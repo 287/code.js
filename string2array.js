@@ -9,18 +9,18 @@
 function string2array(string, seps, op = {trimValue: false, trimQuote: true, removeBlankValue: true})
 	seps = isArray(seps) ? seps : [seps]
 	
-	return split(string, 0)
-	
 	function split(string, level)
 		let sep = seps[level]
 		let arr = splitStringWithoutWrap(string, sep)
 		let hasNext = seps.length > level + 1
-		eachArray(arr, (value, i, arr)=>{
+		for arr as value i
 			if op.trimValue
 				value = trim(value)
 			if op.removeBlankValue && value === ''
 				arr.splice(i, 1)
-				return true
+				i--
+				continue
+				
 			if op.trimQuote
 				if value[0] === '"' && value.slice(-1) === '"'
 					value = value.slice(1, -1)
@@ -29,6 +29,7 @@ function string2array(string, seps, op = {trimValue: false, trimQuote: true, rem
 				value = split(value, level + 1)
 				
 			arr[i] = value
-		})
 		
 		return arr
+	
+	return split(string, 0)

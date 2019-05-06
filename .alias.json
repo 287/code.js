@@ -1,4 +1,8 @@
 {
+	"getNodesByAttr": "getNodesByAttribute",
+	"setNodeAttrs": "setNodeAttributes",
+	"setNodeAttr": "setNodeAttribute",
+	"string2xml": "parseXtml",
 	"transformPoint": "transformPointByMatrix",
 	"eachArrayMapFilter": "eachArrayGetArray",
 	"eachObjectMapFilter": "eachObjectGetObject",

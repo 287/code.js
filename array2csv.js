@@ -4,5 +4,5 @@
  * @return {string}
  */
 function array2csv(array){
-	return array2string(array, [',', '\r\n']);
+	return String.fromCharCode(0xFEFF) + array2string(array, [',', '\r\n']);
 }

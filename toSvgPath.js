@@ -23,26 +23,25 @@ function toSvgPath(path)
 					type = 'Q'
 					p = p.slice(2, 4).concat(p.slice(0, 2))
 					
-				case 5
+				case 7
 					type = 'A'
+					// x, y, radius, startAngle, endAngle
 					// [rx, ry, x-axis-rotation, large-arc-flag, counterclockwise-flag, x, y]
-					let value = (p[3] - p[2]) % 360
-					// console.log(p[2], p[3], value)
-					// let param = []
-					// if value > 180
-						// param.push(1, 1)
-					// else
-						// param.push(0, 1)
-					// if p[3] !== p[2]
-						// if value % 360 === 0
-							// p[1] -= 1
-							// p[0] -= 1
-					// value = value < 180 ? 1 : 0
-					p = [p[4], p[4], 0, (Math.abs(value) > 180) >> 0, (p[3] > p[2]) >> 0, p[0], p[1]]
 					
-				
+					// x, y, originX, originY, r, startAngle, endAngle
+					const value = (p[6] - p[5]) % 360
+					if value === 0 && p[6] != p[5]
+						const origin = []
+						for let i = 0; i < 2; i++
+							origin[i] = p[i + 2] - (p[i] - p[i + 2])
+						d.push(type, p[4], p[4], 0, 0, 1, ...origin)
+							
+					p = [p[4], p[4], 0, (Math.abs(value) > 180) >> 0, (value >= 0) >> 0, p[0], p[1]]
+					// p = [p[4], p[4], 0, (Math.abs(value) > 180) >> 0, (value > 0) >> 0, p[0], p[1]]
+					
 				case 6
-					type = 'T'
+					type = 'C'
+					p = p.slice(2, 6).concat(p.slice(0, 2))
 					
 			d.push(type, ...p)
 		})
@@ -50,5 +49,5 @@ function toSvgPath(path)
 		if isClosedPath(path)
 			d.push('Z')
 	})
-	console.log(d.join(' '))
+	// console.log(d.join(' '))
 	return d.join(' ')

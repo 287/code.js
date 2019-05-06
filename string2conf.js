@@ -1,7 +1,7 @@
 //#!py
 /**
  * parse string to conf
- * @include string2object parseConfValue
+ * @include string2object eachObject parseConfValue
  * @param {string} str - the string
  * @param {list<string|regexp>} seps - separators list
  * @return {object}

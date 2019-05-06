@@ -5,7 +5,7 @@
  * @param {object} [style.attrs = {}]
  * @return {element}
  */
-function addCircleNode(origin, r, style){
+function addCircleNode(origin, r = 2, style){
 	style = Object.assign({
 		background: '#333',
 		size: r * 2,

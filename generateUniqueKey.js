@@ -1,11 +1,15 @@
 //#!py
 /**
- * @include toNumber62
+ * @include random toNumber62 reverseString
  * @param {number} len
  * @return {string}
  */
-function generateUniqueKey(len = 12)
-	let key = toNumber62(Date.now(), 61).split('').reverse().join('') + 'Z'
-	for let i = 0, l = len - key.length; i < l; i++
-		key += toNumber62(Math.round(Math.random() * 61))
+function generateUniqueKey(len = 16, s = Date.now())
+	let key = reverseString(toNumber62(s, 61))
+	if key.length < len
+		key += 'Z'
+	else
+		key = key.slice(0, len)
+	for len - key.length as i
+		key += toNumber62(random(62))
 	return key

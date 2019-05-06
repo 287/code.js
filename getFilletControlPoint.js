@@ -10,6 +10,7 @@ function getFilletControlPoint(prevPoint, middlePoint, nextPoint, r, type){
 	var lenB = getLengthOfTwoPoint(middlePoint, nextPoint);
 	var lenC = getLengthOfTwoPoint(prevPoint, nextPoint);
 	var angle = Math.acos((Math.pow(lenA, 2) + Math.pow(lenB, 2) - Math.pow(lenC, 2)) / (2 * lenA * lenB));
+	r = Math.min(r, Math.min(lenA, lenB) / 2)
 	var radius, len, ratio;
 	type = type === 'radius' ? type : 'length';
 	if(type === 'length'){
@@ -26,7 +27,7 @@ function getFilletControlPoint(prevPoint, middlePoint, nextPoint, r, type){
 	ratio = len / lenB;
 	controlPoints.push([middlePoint[0] + (nextPoint[0] - middlePoint[0]) * ratio, middlePoint[1] + (nextPoint[1] - middlePoint[1]) * ratio]);
 	
-	controlPoints.push(radius);
+	controlPoints.push(radius, angle);
 	
 	return controlPoints;
 }

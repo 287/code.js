@@ -14,19 +14,26 @@ function setNodeDisplay(node, isShow)
 		// show
 		if cssValue === hideValue
 			if !styleValue
-				let tNode = document.createElement(node.tagName)
-				document.body.appendChild(tNode)
-				value = getComputedStyle(tNode).display || 'inline'
-				document.body.removeChild(tNode)
-			else if styleValue === hideValue
+				value = getDefaultStyleByTagName(node.tagName).display || 'inline'
+		if !value
+			if styleValue === hideValue
 				value = ''
 	else
 		// hide
 		if cssValue !== hideValue
 			if !styleValue
 				value = 'none'
-			else if styleValue !== hideValue
-				value = ''
+		if !value
+			if styleValue !== hideValue
+				value = 'none'
 				
 	if value != null
 		node.style.display = value
+		
+	function getDefaultStyleByTagName(tagName)
+		const node = document.createElement(tagName)
+		document.body.appendChild(node)
+		const value = getComputedStyle(node)
+		document.body.removeChild(node)
+		return value
+		

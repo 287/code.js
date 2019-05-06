@@ -1,14 +1,14 @@
 //#!py
 /**
- * @include eachObject setNodeAttr
+ * @include eachObject setNodeAttribute
  * @param {element} node
  * @param {object} attrs
  * @return {element}
  */
-function setNodeAttrs(node, attrs, notSetKeys = [])
+function setNodeAttributes(node, attrs, notSetKeys = [])
 	eachObject(attrs, (value, key)=>{
 		if notSetKeys.includes(key)
 			return
-		setNodeAttr(node, key, value)
+		setNodeAttribute(node, key, value)
 	})
 	return node

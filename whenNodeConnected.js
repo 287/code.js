@@ -4,5 +4,5 @@ function whenNodeConnected(node, cb, interval)
 		if node.isConnected
 			clearInterval(timer)
 			cb(node)
-	}, interval || 1000)
+	}, interval || 200)
 	return timer

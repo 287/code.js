@@ -5,7 +5,14 @@
  * @return {array<array>}
  */
 function objectArrayWithEqualWidth2tableArray(data)
-	const rs = data.map(item=> Object.values(item))
-	if rs.length > 0
-		rs.unshift(Object.keys(data[0]))
+	const rs = []
+	
+	if data.length > 0
+		const keys = Object.keys(data[0])
+		
+		rs.push(keys)
+	
+		for data as item -
+			rs.push(keys.map(key => item[key]))
+			
 	return rs

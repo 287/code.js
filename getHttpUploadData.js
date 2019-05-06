@@ -2,7 +2,7 @@
 /**
  * @desc 
  * @require os fs
- * @include toUnixPath fsSetSync generateUniqueKey
+ * @include toUnixPath writeFile generateKey
  * @param {httpIncomingMessage} req
  * @param {object} op
  * @param {string} [op.uploadDir]
@@ -93,7 +93,7 @@ function getHttpUploadData(req, op, cb)
 						if keepName
 							name = header.filename
 						else
-							name = 'tmp-' + generateUniqueKey()
+							name = generateKey(32)
 						lastHeader.path = uploaddir + name
 						lastHeader.size = 0
 				else
@@ -123,7 +123,13 @@ function getHttpUploadData(req, op, cb)
 		if !lastHeader.isFile
 			if bufs.length
 				let content = Buffer.concat(bufs).toString()
-				posts[name] = content
+				if(!posts[name]){
+					posts[name] = content
+				}else if(isArray(posts[name])){
+					posts[name].push(content)
+				}else{
+					posts[name] = [posts[name], content]
+				}
 		else
 			let item = {
 				name: lastHeader.filename,
@@ -141,9 +147,9 @@ function getHttpUploadData(req, op, cb)
 		bufs = []
 	
 	function pushBuf(buf)
-		if lastHeader.isFile
+		if lastHeader && lastHeader.isFile
 			if lastHeader.size === 0
-				fsSetSync(lastHeader.path, buf)
+				writeFile(lastHeader.path, buf)
 			else
 				fs.appendFileSync(lastHeader.path, buf)
 			

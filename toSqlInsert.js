@@ -1,6 +1,6 @@
 //#!py
 /**
- * @include isString isBoolean isArray eachArraySet
+ * @include isString isBoolean isArray eachArraySet isPureObject objectArray2tableArray
  * @param {string} table
  * @param {object|array<array>} data
  * @param {object|boolean} op
@@ -16,6 +16,9 @@ function toSqlInsert(table, data, op)
 	let keys, values, prepares
 	
 	if isMultiple
+		if isPureObject(data[0])
+			data = objectArray2tableArray(data)
+			
 		keys = data[0]
 		
 		if prepare
