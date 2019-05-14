@@ -1,22 +1,14 @@
 //#!py
 /**
- * 拆分字符串，规避()[]""''等字符的包裹
- * @include findIndexWithoutWrapFromString
- * @param {string} str
+ * @desc 拆分字符串，规避()[]""''等字符的包裹
+ * @include eachStringBySplitWithoutWrap
+ * @param {string} string
  * @param {string} sep
- * @param {number} times - 限制拆分次数
+ * @param {number} [times = 0] - 限制拆分次数
+ * @param {array} [wraps]
  * @return {array<string>}
  */
-function splitStringWithinWrap(string, sep, times = 0)
-	let arr = []
-	let lastIndex = 0
-	let index
-	while (index = findIndexWithoutWrapFromString(string, sep, lastIndex)) !== -1
-		arr.push(string.slice(lastIndex, index))
-		lastIndex = index + sep.length
-		if times && arr.length >= times 
-			break
-		
-	arr.push(string.slice(lastIndex))
-	
+function splitStringWithinWrap(string, sep, times = 0, wraps)
+	const arr = []
+	eachStringBySplitWithoutWrap(string, sep, {limit: times, wraps}, str=> arr.push(str))
 	return arr
