@@ -1,6 +1,6 @@
 //#!py
 /**
- * @include eachArray eachNodeChilds toArrayIfNot
+ * @include eachArray eachChildren toArrayIfNot
  * @param {string} str
  * @param {array<string>} rules
  * @return {boolean}
@@ -30,7 +30,7 @@ function serializeTree(tree, op)
 	
 	let tabAdd = op.removeRoot ? -1 : 0
 	
-	eachNodeChilds(tree, (node, conf)=>{
+	eachChildren(tree, (node, conf)=>{
 		if conf.level === 0 && op.removeRoot
 			return
 			
