@@ -34,7 +34,7 @@ function serializeTree(tree, op)
 		if conf.level === 0 && op.removeRoot
 			return
 			
-		let wrapper = [op.getWrapStart(node, conf), op.getWrapEnd(node, conf)]
+		let wrapper = op.getWrap ? op.getWrap(node, conf) : [op.getWrapStart(node, conf), op.getWrapEnd(node, conf)]
 			
 		let tab = op.withTab ? op.tab.repeat(conf.level + tabAdd) : ''
 		wrapper = wrapper.map((wrap)=> {
